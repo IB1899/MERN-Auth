@@ -1,0 +1,11 @@
+
+
+# The Frontend Modules
+/frontend/node_modules
+
+# The Backend Modules
+/backend/node_modules
+
+
+# Sensitive information
+/backend/.env
