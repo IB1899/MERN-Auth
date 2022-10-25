@@ -12,7 +12,9 @@ body{  color:black; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
         .logo{ font-size:30px; margin:10px; font-weight:800; }
 
         ul{ display:flex; list-style:none; margin:10px;  
-            li{ font-size:20px; cursor:pointer; margin:7px 10px;  font-weight:600;}
+            li{ font-size:20px; cursor:pointer; margin:10px;  font-weight:600;}
+            span{ color: red; cursor:pointer; margin:10px 10px; font-size:19px;  font-weight:900 }
+
         }
     }
 
