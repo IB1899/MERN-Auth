@@ -1,41 +1,44 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useContext } from "react";
 
 //! Pages
 import Navbar from './pages/Navbar.jsx';
 import Home from './pages/Home.jsx';
-import Reducer from './pages/reducer.jsx'
+import Reducer from './pages/reducer.jsx';
 import SignUp from "./pages/Auth/SignUp.jsx";
-import LogIn from "./pages/Auth/LogIn.jsx"
+import LogIn from "./pages/Auth/LogIn.jsx";
 
-//! ContextProvider
-import FirstContextProvider from "./contexts/FirstContexts.jsx";
+//! AuthContext
+import { AuthContext } from "./contexts/AuthContexts.jsx";
 
 let App = () => {
 
-  let [a] = useState("true");
+    console.log("The app has ran");
 
-  
-  return (
-    <Router>
-      <div className="App">
-
-        <Navbar />
+    //* Using the global Auth state to protect routs
+    let { state } = useContext(AuthContext);
 
 
-        <FirstContextProvider>
-          <Routes>
-            <Route path="/" element={<Home a={a} />} />
-            <Route path="/reducer" element={<Reducer a={a} />} />
-            <Route path="sign-up" element={ <SignUp /> } />
-            <Route path="log-in" element={ <LogIn /> } />
+    return (
+        <Router>
+            <div className="App">
 
-          </Routes>
-        </FirstContextProvider>
+                <Navbar />
 
-      </div>
-    </Router>
-  );
+                <Routes>
+                    <Route path="/" element={<Home />} />
+
+                    <Route path="/reducer" element={state.user ? <Reducer /> : <Navigate to={"log-in"} />} />
+
+                    <Route path="sign-up" element={!state.user ? <SignUp /> : <Navigate to={"/"} />} />
+
+                    <Route path="log-in" element={!state.user ? <LogIn /> : <Navigate to={"/"} />} />
+
+                </Routes>
+
+            </div>
+        </Router>
+    );
 }
 export default App;
 

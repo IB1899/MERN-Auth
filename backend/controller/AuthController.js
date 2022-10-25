@@ -14,14 +14,14 @@ AuthRoutes.post("/sign-up", async (req, res) => {
         let { email, password } = req.body;
 
         let result = await AuthModel.create({ email, password });
-        
+
         //! Creating jwt
-        let token = jwt.sign( {id:result.id} , "The secret" , { expiresIn: 60 * 60 * 24 });
+        let token = jwt.sign({ id: result.id }, "The secret", { expiresIn: 60 * 60 * 24 });
 
         //! Creating and sending a cookie
-        res.cookie( "jwt" , token , { httpOnly:true , maxAge: 1000 * 60 * 60 * 24 })
+        res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 })
 
-        res.json({ id:result.id , success:"A user has been created successfully" });
+        res.json({ email, token, success: "A user has been created successfully" });
 
     } catch (err) {
         // console.log(err.errors.password.properties.message);
@@ -41,7 +41,7 @@ AuthRoutes.post("/sign-up", async (req, res) => {
             Errors["error"] = "There is an error"
             console.log(err);
         }
-        res.json({Errors})
+        res.json({ Errors })
     }
 })
 
@@ -53,31 +53,49 @@ AuthRoutes.post("/log-in", async (req, res) => {
 
         let result = await AuthModel.findOne({ email });
 
-        if(result){
+        if (result) {
 
             //! Here we compare the hash password in the document and the password the user entered
-            let auth = await bcrypt.compare(password , result.password)
+            let auth = await bcrypt.compare(password, result.password)
 
-            if(auth){
+            if (auth) {
 
                 //! Creating a jwt
-                let token = jwt.sign( {id:result.id} , "The secret" , {expiresIn: 60 * 60 * 24 } )
-                
+                let token = jwt.sign({ id: result.id }, "The secret", { expiresIn: 60 * 60 * 24 })
+
                 //! Creating and sending a cookie
-                res.cookie( "jwt" , token ,{ httpOnly:true , maxAge:1000 * 60 * 60 * 24 })
-                
-                res.json({ id:result.id , success:"You have successfully logged in" });
+                res.cookie("jwt", token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 })
+
+                res.json({ email, token, success: "A user has been created successfully" });
             }
-            else{   
+            else {
                 throw Error("The password is not correct");
             }
         }
-        else{
+        else {
             throw Error("There is no such an email");
         }
 
-    }catch (err) {
-        res.json({Error:err.message})
+    } catch (err) {
+        res.json({ Error: err.message })
+    }
+})
+
+//! Log A user  out
+AuthRoutes.get("/log-out", (req, res) => {
+
+    try {
+        /*
+         * Replacing the token that was created when a user logs in , with new one 
+         * with a very short life , which means we deleted it
+       */
+
+        res.cookie("jwt", "", { maxAge: 1 });
+
+        res.json({ success: "You have successfully logged out" })
+    }
+    catch (err) {
+        console.log(err);
     }
 })
 
