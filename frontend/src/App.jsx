@@ -13,11 +13,8 @@ import { AuthContext } from "./contexts/AuthContexts.jsx";
 
 let App = () => {
 
-    console.log("The app has ran");
-
     //* Using the global Auth state to protect routs
     let { state } = useContext(AuthContext);
-
 
     return (
         <Router>
@@ -28,7 +25,7 @@ let App = () => {
                 <Routes>
                     <Route path="/" element={<Home />} />
 
-                    <Route path="/reducer" element={state.user ? <Reducer /> : <Navigate to={"log-in"} />} />
+                    <Route path="/reducer" element={state.user ? <Reducer /> : <Navigate to={"/log-in"} />} />
 
                     <Route path="sign-up" element={!state.user ? <SignUp /> : <Navigate to={"/"} />} />
 
@@ -41,5 +38,4 @@ let App = () => {
     );
 }
 export default App;
-
 
