@@ -7,7 +7,7 @@ const Navbar = () => {
 
     //! For navigation
     let navigate = useNavigate();
- 
+
     //! The global Auth state , has value if logged in, null if not logged in
     let { state } = useContext(AuthContext);
 

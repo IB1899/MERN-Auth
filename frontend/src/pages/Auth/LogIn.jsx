@@ -1,62 +1,25 @@
-import { useState , useContext } from "react";
-import {AuthContext} from "../../contexts/AuthContexts";
+import { useState } from "react";
+import useLogIn from "../../hooks/useLogIn";
 
 const LogIn = () => {
-
-    //TODO global state to be updated it after loges in & save it to local storage
-    let { dispatch } = useContext(AuthContext);
 
     //TODO the data the user send 
     let [email, setEmail] = useState("");
     let [password, setPassword] = useState("");
 
-    //TODO Stats for the backend messages 
-    let [emailErr, setEmailErr] = useState(undefined);
-    let [passwordErr, setPasswordErr] = useState(undefined);
-    let [success, setSuccess] = useState(undefined);
+    //TODO logic from useSignUp hook
+    let { Do, emailErr, passwordErr, success } = useLogIn();
 
     //! onSubmit fire this function
     let Post = async (e) => {
         e.preventDefault();
 
-        let response = await fetch("/log-in", {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        });
-
-        let data = await response.json();
-
-        if (response.ok) {  //TODO execute this only if the response is true
-            if (data.Error) {
-
-                if (data.Error.includes("The password is not correct")) {
-                    setPasswordErr(data.Error);
-                    setEmailErr(undefined)
-                }
-                else {
-                    setEmailErr(data.Error);
-                    setPasswordErr(undefined)
-                }
-            }
-            else {
-                setEmailErr(undefined);
-                setPasswordErr(undefined);
-                setEmail("");
-                setPassword("")
-                setSuccess(data.success);
-
-                //! Saving the token that we get after signing up in local storage
-                localStorage.setItem("user", JSON.stringify(data));
-
-                //! Updating the AuthContext state , so we can know in react if user logged in or not
-                dispatch({ type: "LOGIN", payload: data });
-            }
-        }
+        //! The request logic
+        Do(email, password);
     }
 
     return (
         <div className="LogIn">
-
             <h1> Log In Page </h1>
 
             <form onSubmit={Post}>
@@ -77,5 +40,4 @@ const LogIn = () => {
         </div>
     );
 }
-
 export default LogIn;

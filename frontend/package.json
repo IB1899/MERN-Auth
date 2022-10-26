@@ -1,6 +1,7 @@
 {
   "proxy": "http://localhost:3001",
   "name": "frontend",
+  "description": "The Frontend of MERN project",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
